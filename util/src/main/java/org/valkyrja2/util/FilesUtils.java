@@ -1,4 +1,10 @@
-package org.valkyrja.util;
+/*
+ * PROJECT valkyrja2
+ * util/FilesUtils.java
+ * Copyright (c) 2022 Tequila.Yang
+ */
+
+package org.valkyrja2.util;
 
 
 import org.apache.commons.codec.binary.Hex;
@@ -21,6 +27,7 @@ import static org.apache.commons.io.IOUtils.EOF;
  * @create 2022/05/20 12:38
  **/
 public class FilesUtils {
+
     /** 默认的buffer size(4096) */
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
@@ -35,7 +42,7 @@ public class FilesUtils {
      * @date 2022/05/20 11:44
      */
     public static byte[] readFileToByteArray(final File file, FileReadingHandler handler) throws IOException {
-        return readFileToByteArray(file, false, handler);
+        return readFileToByteArray(file, handler, false);
     }
 
     /**
@@ -49,7 +56,7 @@ public class FilesUtils {
      * @author Tequila
      * @date 2022/05/20 11:18
      */
-    public static byte[] readFileToByteArray(final File file, boolean onlyHandler, FileReadingHandler handler) throws IOException {
+    public static byte[] readFileToByteArray(final File file, FileReadingHandler handler, boolean onlyHandler) throws IOException {
         try (InputStream in = FileUtils.openInputStream(file);
              ByteArrayOutputStream output = new ByteArrayOutputStream() ) {
             final long fileLength = file.length();
@@ -60,10 +67,10 @@ public class FilesUtils {
                 }
 
                 byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-                int n;
+                int n;  // 读取的数据长度
                 while (EOF != (n = in.read(buffer))) {
                     if (!onlyHandler) output.write(buffer, 0, n);  // 如果仅处理handler，则不降buffer写入返回值
-                    if (handler != null) handler.handle(buffer, n);
+                    if (handler != null) handler.read(buffer, n);
                 }
 
                 return output.toByteArray();
@@ -120,7 +127,7 @@ public class FilesUtils {
         }
 
         MessageDigest finalHashSum = hashSum;
-        readFileToByteArray(file, true, (buffer, len) -> finalHashSum.update(buffer, 0, len));
+        readFileToByteArray(file, (buffer, len) -> finalHashSum.update(buffer, 0, len), true);
 
         return Hex.encodeHexString(finalHashSum.digest());
     }
@@ -142,10 +149,10 @@ public class FilesUtils {
          * @author Tequila
          * @date 2022/05/20 11:14
          */
-        void handle(byte[] buffer, int len);
+        void read(byte[] buffer, int len);
     }
 
     private FilesUtils() {
-        throw new IllegalStateException("Utilities class.");
+        throw new IllegalStateException("Utility class");
     }
 }
