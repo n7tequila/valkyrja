@@ -16,9 +16,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>../util</module>
-        <module>../core</module>
-        <module>../test</module>
+        <module>util</module>
+        <module>core</module>
+        <module>test</module>
     </modules>
 
     <properties>

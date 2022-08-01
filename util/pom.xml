@@ -12,7 +12,7 @@
         <artifactId>valkyrja-framework</artifactId>
         <groupId>org.valkyrja2</groupId>
         <version>2.0-SNAPSHOT</version>
-        <relativePath>../root/pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
