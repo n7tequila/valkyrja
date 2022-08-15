@@ -34,8 +34,10 @@
         <springframework-data.version>2.7.1</springframework-data.version>
         <springframework-data-jpa.version>2.7.1</springframework-data-jpa.version>
         <springframework-data-mongodb.version>3.4.1</springframework-data-mongodb.version>
-        <springframework-data-redis.version>2.1.8.RELEASE</springframework-data-redis.version>
+        <springframework-data-redis.version>2.1.21.RELEASE</springframework-data-redis.version>
         <springframework-amqp-rabbit.version>2.4.6</springframework-amqp-rabbit.version>
+        <redission.version>3.17.5</redission.version>
+        <sentinel.version>1.8.4</sentinel.version>
         <!-- END common dependency version define -->
     </properties>
 
