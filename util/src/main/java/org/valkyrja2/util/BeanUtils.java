@@ -143,4 +143,15 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
 
         return output;
     }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getBeanPropertyValue(Object bean, String propertyName) {
+        if (getPropertyUtils().isReadable(bean, propertyName)) {
+            try {
+                return (T) getPropertyUtils().getSimpleProperty(bean, propertyName);
+            } catch (Exception e) { /* nothing to do */ }
+        }
+
+        return null;
+    }
 }

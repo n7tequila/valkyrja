@@ -54,4 +54,8 @@ public class OTPUtils {
     public static String buildTOTP(String key, int length) {
         return buildTOTP(key, length, HMACAlgorithm.SHA1, DEFAULT_PERIOD);
     }
+
+    private OTPUtils() {
+        throw new IllegalStateException("Utility class");
+    }
 }

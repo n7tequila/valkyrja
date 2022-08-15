@@ -55,7 +55,7 @@ public class ClassUtils {
 
 
     /**
-     * 通过反射, 获得Class定义中声明的父类的指定位置的泛型参数的类型。
+     * 通过反射, 获得Class定义中声明的Superclass的指定位置的泛型参数的类型。
      * <br>
      * 注意泛型必须定义在父类处. 这是唯一可以通过反射从泛型获得Class实例的地方。如无法找到, 返回null。<br>
      * 如public UserDao extends HibernateDao<User, Long>
@@ -66,14 +66,45 @@ public class ClassUtils {
      * @author Tequila
      * @date 2022/06/27 16:39
      */
-    @SuppressWarnings("unchecked")
     public static <T> Class<T> getClassGenericType(final Class<?> klass, final int index) {
         Objects.requireNonNull(klass, MSG_CLASS_MUST_NOT_NULL);
         if (index < 0) throw new IllegalArgumentException(MSG_INDEX_GTE_ZERO);
 
         Type genType = klass.getGenericSuperclass();
+
+        return getGenericType(klass, genType, index, "superclass");
+    }
+
+    /**
+     * 通过反射, 获得Class定义中声明的Interface的指定位置的泛型参数的类型。
+     * <br>
+     * 注意泛型必须定义在Interface处. 这是唯一可以通过反射从泛型获得Class实例的地方。如无法找到, 返回null。<br>
+     * 如public UserDao extends HibernateDao<User, Long>
+     *
+     * @param klass klass
+     * @param index 需要获取第几个泛型对象，从0开始
+     * @return {@link Class }<{@link T }>
+     * @author Tequila
+     * @date 2022/08/11 23:42
+     */
+    public static <T> Class<T> getInterfaceGenericType(final Class<?> klass, final int index) {
+        Objects.requireNonNull(klass, MSG_CLASS_MUST_NOT_NULL);
+        if (index < 0) throw new IllegalArgumentException(MSG_INDEX_GTE_ZERO);
+
+        Type[] genTypes = klass.getGenericInterfaces();
+        if (genTypes.length == 0) {
+            log.warn("{}'s interface not ParameterizedType", klass.getSimpleName());
+            return null;
+        }
+        Type genType = genTypes[0];
+
+        return getGenericType(klass, genType, index, "interface");
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Class<T> getGenericType(final Class<?> klass, final Type genType, final int index, String type) {
         if (!(genType instanceof ParameterizedType)) {
-            log.warn("{}'s superclass not ParameterizedType", klass.getSimpleName());
+            log.warn("{}'s {} not ParameterizedType", klass.getSimpleName(), type);
             return null;
         }
 
@@ -83,7 +114,7 @@ public class ClassUtils {
             return null;
         }
         if (!(types[index] instanceof Class<?>)) {
-            log.warn("{} not set the actual class on superclass generic parameter", klass.getSimpleName());
+            log.warn("{} not set the actual class on {} generic parameter", klass.getSimpleName(), type);
             return null;
         }
 
@@ -146,6 +177,22 @@ public class ClassUtils {
     }
 
     /**
+     * 根据class name获取class对象
+     *
+     * @param typeName 类型名称
+     * @return {@link Type }
+     * @author Tequila
+     * @date 2022/08/12 01:08
+     */
+    public static Class<?> forName(String typeName) {
+        try {
+            return Class.forName(typeName);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException("Class not found " + typeName, e);
+        }
+    }
+
+    /**
      * @see org.apache.commons.lang3.ClassUtils#isAssignable(Class, Class)
      */
     public static boolean isAssignable(Class<?> cls, Class<?> toClass) {
@@ -172,5 +219,6 @@ public class ClassUtils {
     public static boolean isAssignable(Class<?>[] classArray, Class<?>[] toClassArray, boolean autoboxing) {
         return org.apache.commons.lang3.ClassUtils.isAssignable(classArray, toClassArray, autoboxing);
     }
+
 }
 
