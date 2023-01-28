@@ -113,12 +113,16 @@ public class ClassUtils {
             log.warn("Index: {}, Size of {}'s Parameterized Type: {}", index, klass.getSimpleName(), types.length);
             return null;
         }
-        if (!(types[index] instanceof Class<?>)) {
-            log.warn("{} not set the actual class on {} generic parameter", klass.getSimpleName(), type);
-            return null;
+        if (types[index] instanceof Class<?>) {
+            return (Class<T>) types[index];
+        } else if (types[index] instanceof ParameterizedType &&
+                ((ParameterizedType) types[index]).getRawType() instanceof  Class<?>) {
+            return (Class<T>) ((ParameterizedType) types[index]).getRawType();
         }
 
-        return (Class<T>) types[index];
+        // 所有条件都不符合，则返回null
+        log.warn("{} not set the actual class on {} generic parameter", klass.getSimpleName(), type);
+        return null;
     }
 
     /**

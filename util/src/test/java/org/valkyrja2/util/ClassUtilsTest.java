@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.valkyrja2.util.TestObject.Book;
 import org.valkyrja2.util.TestObject.HarryPotter;
+import org.valkyrja2.util.TestObject.LordOfRing;
 import org.valkyrja2.util.TestObject.People;
 
 import java.lang.reflect.ParameterizedType;
@@ -52,5 +53,11 @@ class ClassUtilsTest {
 //            genType = baseClass.getSuperclass().getGenericSuperclass();
 //            log.info(genType.toString());
 //        }
+    }
+
+    @Test
+    void testGetSuperClassGenericTypeWithMultType() {
+        Class<?> klass = ClassUtils.getSuperClassGenericType(LordOfRing.class, 0);
+        log.info(String.valueOf(klass));
     }
 }

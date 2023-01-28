@@ -572,4 +572,17 @@ public class StringUtils {
         Character.UnicodeScript sc = Character.UnicodeScript.of(c);
         return Character.UnicodeScript.HAN == sc;
     }
+
+    /**
+     * 是否英文
+     *
+     * @param c 字符
+     * @return boolean true表示是英文，否则返回 false
+     * @author Tequila
+     * @date 2023/01/12 22:19
+     */
+    public static boolean isEnglish(char c) {
+        Character.UnicodeScript sc = Character.UnicodeScript.of(c);
+        return Character.UnicodeScript.LATIN == sc;
+    }
 }

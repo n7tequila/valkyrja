@@ -6,6 +6,8 @@
 
 package org.valkyrja2.util;
 
+import org.valkyrja2.util.TestObject.People;
+
 import java.io.Writer;
 
 /**
@@ -201,6 +203,32 @@ public class TestObject {
         }
 
         public Writer(String id, String name, int age, String sex, String idno, Book<String, Float> book) {
+            super(id, name, age, sex, idno, book);
+        }
+    }
+
+    public static class LordOfRing extends StoryBook<Sales<People>> {
+        public LordOfRing() {
+        }
+
+        public LordOfRing(String id, String name, String isbn, float price) {
+            super(id, name, isbn, price);
+        }
+    }
+
+    public static class Sales<P extends People> extends People {
+        public Sales() {
+        }
+
+        public Sales(String id, String name) {
+            super(id, name);
+        }
+
+        public Sales(String id, String name, int age, String sex, String idno) {
+            super(id, name, age, sex, idno);
+        }
+
+        public Sales(String id, String name, int age, String sex, String idno, Book<String, Float> book) {
             super(id, name, age, sex, idno, book);
         }
     }
