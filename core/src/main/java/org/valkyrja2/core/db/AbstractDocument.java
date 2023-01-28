@@ -32,6 +32,24 @@ public abstract class AbstractDocument<ID extends Serializable> extends Abstract
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof AbstractDocument)) return false;
+		if (!super.equals(o)) return false;
+
+		AbstractDocument<?> that = (AbstractDocument<?>) o;
+
+		return id.equals(that.id);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + id.hashCode();
+		return result;
+	}
+
+	@Override
 	public ID getId() {
 		return id;
 	}

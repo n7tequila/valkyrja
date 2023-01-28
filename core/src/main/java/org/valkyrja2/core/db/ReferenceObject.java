@@ -28,6 +28,21 @@ public class ReferenceObject<T extends AbstractDocument<?>> extends AbstractRefe
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof ReferenceObject)) return false;
+
+		ReferenceObject<?> that = (ReferenceObject<?>) o;
+
+		return body.equals(that.body);
+	}
+
+	@Override
+	public int hashCode() {
+		return body.hashCode();
+	}
+
+	@Override
 	public T getBody() {
 		return body;
 	}

@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Transient;
 
 /**
- * 应用对象的抽象类
+ * 引用对象的抽象类
  *
  * @author Tequila
  * @create 2022/07/01 21:08
@@ -19,7 +19,7 @@ import org.springframework.data.annotation.Transient;
 public abstract class AbstractReferenceObject<T extends AbstractDocument<?>> {
 	
 	protected AbstractReferenceObject() {
-		/* ignore */
+		super();
 	}
 
 	/**
@@ -60,6 +60,18 @@ public abstract class AbstractReferenceObject<T extends AbstractDocument<?>> {
 	public boolean isBodyNull() {
 		/* 如果body为null，则返回true */
 		return (getBody() == null);
+	}
+
+	/**
+	 * 返回引用对象是否不为空
+	 *
+	 * @return boolean
+	 * @author Tequila
+	 * @date 2023/01/16 10:32
+	 */
+	@Transient @JsonIgnore
+	public boolean isBodyNotNull() {
+		return !isBodyNull();
 	}
 
 	@Override

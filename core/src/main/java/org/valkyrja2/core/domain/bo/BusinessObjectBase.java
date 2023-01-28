@@ -90,25 +90,10 @@ public abstract class BusinessObjectBase<T extends AbstractEntity<ID>, ID extend
 	 * @author Tequila
 	 * @date 2022/07/04 11:28
 	 */
-	@SuppressWarnings("rawtypes")
 	protected BusinessObjectBase(ID id, boolean allowDeleted, boolean notFoundRaiseError) {
 		super();
 
-		if (notFoundRaiseError) {
-			this.entity = repo.findById(id).orElseThrow(() -> new BizRuntimeException(ResponseCode.OBJECT_NOT_FOUND));
-		} else {
-			this.entity = repo.findById(id).orElse(null);
-		}
-		/* 如果允许载入删除数据，则跳过删除检查，否则进行删除标记检查 */
-		if (!allowDeleted
-				&& this.entity instanceof AbstractCMDDocument
-					&& ((AbstractCMDDocument) this.entity).getDeleted()) {
-			if (notFoundRaiseError) {
-				throw new BizRuntimeException(ResponseCode.OBJECT_NOT_FOUND);
-			} else {
-				this.entity = null;
-			}
-		}
+		findById(id, allowDeleted, notFoundRaiseError);
 
 		initDefine();
 		handleInit();
@@ -204,6 +189,48 @@ public abstract class BusinessObjectBase<T extends AbstractEntity<ID>, ID extend
 		if (getBODefine().isRaiseError()) {
 			throw e;
 		}
+	}
+
+	/**
+	 * 通过id查找数据
+	 *
+	 * @param id                 id
+	 * @param allowDeleted       允许载入删除数据
+	 * @param notFoundRaiseError 没有找到数据时是否抛出错误
+	 * @return {@link T }
+	 * @author Tequila
+	 * @date 2022/09/14 14:39
+	 */
+	public T findById(ID id, boolean allowDeleted, boolean notFoundRaiseError) {
+		if (notFoundRaiseError) {
+			this.entity = repo.findById(id).orElseThrow(() -> new BizRuntimeException(ResponseCode.OBJECT_NOT_FOUND));
+		} else {
+			this.entity = repo.findById(id).orElse(null);
+		}
+		/* 如果允许载入删除数据，则跳过删除检查，否则进行删除标记检查 */
+		if (!allowDeleted
+				&& this.entity instanceof AbstractCMDDocument<?>
+				&& ((AbstractCMDDocument<?>) this.entity).getDeleted()) {
+			if (notFoundRaiseError) {
+				throw new BizRuntimeException(ResponseCode.OBJECT_NOT_FOUND);
+			} else {
+				this.entity = null;
+			}
+		}
+
+		return this.entity;
+	}
+
+	/**
+	 * 通过id查找数据
+	 *
+	 * @param id id
+	 * @return {@link T }
+	 * @author Tequila
+	 * @date 2022/09/14 14:42
+	 */
+	public T findById(ID id) {
+		return findById(id, false, true);
 	}
 
 	/**

@@ -10,6 +10,7 @@ import org.springframework.data.repository.Repository;
 import org.valkyrja2.core.db.AbstractEntity;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Objects;
 
 /**

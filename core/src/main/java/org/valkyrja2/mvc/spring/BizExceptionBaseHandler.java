@@ -35,7 +35,8 @@ public abstract class BizExceptionBaseHandler {
      * @author Tequila
      * @date 2022/07/25 00:57
      */
-    protected  <T extends Exception> ResponseObject<?> createResponseObject(Method method, T e) {
+    @SuppressWarnings("unchecked")
+    protected  <T extends Exception> ResponseObject<Void> createResponseObject(Method method, T e) {
         Class<?> respObjClass;
         if (method.getAnnotation(OpenAPI.class) != null) {
             respObjClass = ApiResponseObject.class;
@@ -53,7 +54,7 @@ public abstract class BizExceptionBaseHandler {
                 constructor = respObjClass.getConstructor();
             }
 
-            return (ResponseObject<?>) constructor.newInstance(e);
+            return (ResponseObject<Void>) constructor.newInstance(e);
         } catch (Exception ex) {
             if (method.getAnnotation(OpenAPI.class) != null) {
                 return new ApiResponseObject<>(e);

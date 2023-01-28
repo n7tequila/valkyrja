@@ -27,6 +27,21 @@ public class ReferenceLazyObject<T extends AbstractDocument<?>> extends Abstract
 		this.body = t;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof ReferenceLazyObject)) return false;
+
+		ReferenceLazyObject<?> that = (ReferenceLazyObject<?>) o;
+
+		return body.equals(that.body);
+	}
+
+	@Override
+	public int hashCode() {
+		return body.hashCode();
+	}
+
 	public T getBody() {
 		return body;
 	}

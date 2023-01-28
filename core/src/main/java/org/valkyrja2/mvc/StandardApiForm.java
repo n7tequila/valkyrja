@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.valkyrja2.component.api.AccessKeyForm;
 import org.valkyrja2.exception.ValidateException;
 import org.valkyrja2.util.Jackson2Utils;
 import org.valkyrja2.util.StringUtils;
@@ -24,7 +25,7 @@ import java.io.IOException;
  * @author Tequila
  * @create 2022/07/19 14:19
  **/
-public class StandardApiForm<T extends FormObject> extends AbstractFormObject {
+public class StandardApiForm<T extends FormObject> extends AbstractFormObject implements AccessKeyForm, RequestTimeForm {
 	private static final Logger log = LoggerFactory.getLogger(StandardApiForm.class);
 
 	private static final String ERR_BODY_FIELD = "body";
@@ -80,7 +81,7 @@ public class StandardApiForm<T extends FormObject> extends AbstractFormObject {
 	 * @author Tequila
 	 * @date 2022/07/19 13:42
 	 */
-	protected String buildSignedDataRaw() {
+	protected String buildSignatureRaw() {
 		return concatParams(appCode, body, nullableField(nonceStr), getTime());
 	}
 
@@ -117,15 +118,15 @@ public class StandardApiForm<T extends FormObject> extends AbstractFormObject {
 	}
 
 	/**
-	 * 通用验证签名方法
+	 * 签名是否有效
 	 *
 	 * @param signKey 标志key
 	 * @return boolean
 	 * @author Tequila
-	 * @date 2022/07/19 13:45
+	 * @date 2022/08/01 21:12
 	 */
-	public boolean validateSign(String signKey) {
-		String raw = buildSignedDataRaw();
+	public boolean isSignatureValid(String signKey) {
+		String raw = buildSignatureRaw();
 		String correctSign = DigestUtils.sha256Hex(raw + signKey);
 		if (!correctSign.equalsIgnoreCase(sign)) {
 			log.debug("========== 正确的API签名: {}", correctSign);
@@ -144,13 +145,24 @@ public class StandardApiForm<T extends FormObject> extends AbstractFormObject {
 	 */
 	@JsonIgnore
 	public FormValidResult isBodyValid(Class<T> bodyClass, Class<?> ... groups) {
+		bodyForm = parseBodyForm(bodyClass);
+		return isFormValid(bodyForm, groups);
+	}
+
+	/**
+	 * 解析bodyForm的json对象
+	 *
+	 * @param bodyClass 体类
+	 * @return {@link T }
+	 * @author Tequila
+	 * @date 2022/08/01 20:36
+	 */
+	public T parseBodyForm(Class<T> bodyClass) {
 		try {
-			bodyForm = Jackson2Utils.json2obj(this.getBody(), bodyClass);
+			return Jackson2Utils.json2obj(this.body, bodyClass);
 		} catch (IOException e) {
 			throw new ValidateException(ERR_BODY_FIELD, ERR_BODY_CONVERT);
 		}
-
-		return isFormValid(bodyForm, groups);
 	}
 
 	public String getAppCode() {

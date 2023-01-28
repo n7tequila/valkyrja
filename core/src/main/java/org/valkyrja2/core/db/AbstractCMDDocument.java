@@ -33,6 +33,24 @@ public abstract class AbstractCMDDocument<ID extends Serializable> extends Abstr
 		super(id);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof AbstractCMDDocument)) return false;
+		if (!super.equals(o)) return false;
+
+		AbstractCMDDocument<?> that = (AbstractCMDDocument<?>) o;
+
+		return deleted == that.deleted;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (deleted ? 1 : 0);
+		return result;
+	}
+
 	public Operator getDeleter() {
 		return deleter;
 	}

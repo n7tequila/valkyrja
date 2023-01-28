@@ -1,18 +1,12 @@
-/*
- * PROJECT valkyrja2
- * core/DuplicateRequestException.java
- * Copyright (c) 2022 Tequila.Yang
- */
-
 package org.valkyrja2.component.idempotent.exception;
 
 /**
  * 重复请求错误
  *
  * @author Tequila
- * @create 2022/07/14 22:12
+ * @create 2022/08/05 11:54
  **/
-public class DuplicateRequestException extends IdempotentRuntimeException {
+public class DuplicateRequestException extends IdempotentException {
 
     public DuplicateRequestException() {
     }

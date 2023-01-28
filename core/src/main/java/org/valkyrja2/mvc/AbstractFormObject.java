@@ -66,7 +66,7 @@ public abstract class AbstractFormObject implements FormObject, JsonObject {
 	 */
 	protected void checkFormValid(AbstractFormObject form, Class<?> ... groups) {
 		FormValidResult formValidResult = isFormValid(form, groups);
-		if (!formValidResult.isValid()) {
+		if (formValidResult.isNotValid()) {
 			throw new ValidateException(formValidResult.getViolations());
 		}
 	}

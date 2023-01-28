@@ -28,6 +28,10 @@ public class FormValidResult {
 		return violations.isEmpty();
 	}
 
+	public boolean isNotValid() {
+		return !isValid();
+	}
+
 	public Set<ConstraintViolation<Object>> getViolations() {
 		return violations;
 	}

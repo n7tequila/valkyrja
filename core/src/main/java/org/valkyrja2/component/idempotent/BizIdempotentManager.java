@@ -10,14 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.valkyrja2.component.idempotent.exception.DuplicateRequestException;
+import org.valkyrja2.component.idempotent.exception.DuplicateRequestRuntimeException;
 import org.valkyrja2.component.idempotent.exception.IdempotentRuntimeException;
-import org.valkyrja2.exception.BizRuntimeException;
-import org.valkyrja2.mvc.ResponseCode;
 import org.valkyrja2.mvc.spring.SpringUtils;
 import org.valkyrja2.util.StringUtils;
 
-import java.sql.PreparedStatement;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
@@ -92,7 +89,7 @@ public class BizIdempotentManager {
 		 * 再判断redis中有没有
 		 */
 		if (sessionTokenExists(token) || redisTokenExistsAndSet(token, expire, unit)) {
-			throw new DuplicateRequestException(errMsg);
+			throw new DuplicateRequestRuntimeException(errMsg);
 		}
 		if (log.isDebugEnabled()) log.debug("BizIdempotentManager.startTrans({})", token);
 	}
